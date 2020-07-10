@@ -10,23 +10,40 @@ import {
   ScrollView,
   TouchableHighlight,
   TextInput,
+  Pressable,
 } from 'react-native'
 import moment from 'moment'
 
 const FAKE_THOUGHTS = [
-  { id: '1', text: 'You should look at different things', date: new Date()},
-  { id: '2', text: 'What is my favorite thing to do?', date: new Date()},
-  { id: '3', text: 'Never shoot yourself in the foot you know', date: new Date()},
+  {
+    id: '1',
+    text: 'You should look at different things',
+    date: moment('2020-06-15'),
+  },
+  {
+    id: '2',
+    text: 'What is my favorite thing to do?',
+    date: moment('2020-07-10'),
+  },
+  {
+    id: '3',
+    text: 'Never shoot yourself in the foot you know',
+    date: new Date(),
+  },
 ]
 
 function Thought({ thought }) {
   const [value, setValue] = useState('')
+  const [displayFullDate, setDisplayFullDate] = useState(false)
 
   useEffect(() => {
     thought.text && thought.text.length > 0 && setValue(thought.text)
+    thought.date
   }, [thought])
 
-  const dateText = moment(thought.date).fromNow()
+  const dateText = displayFullDate
+    ? moment(thought.date).format('MM-DD-yyyy')
+    : moment(thought.date).fromNow()
 
   return (
     <View style={styles.thoughtContainer}>
@@ -38,6 +55,8 @@ function Thought({ thought }) {
         value={value}
         onChangeText={(text) => setValue(text)}
         multiline={true}
+        onFocus={() => setDisplayFullDate(true)}
+        onBlur={() => setDisplayFullDate(false)}
       />
     </View>
   )
@@ -105,5 +124,6 @@ const styles = StyleSheet.create({
     width: '100%',
     padding: 10,
     backgroundColor: colors.white,
+    minHeight: 40,
   },
 })
